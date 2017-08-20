@@ -1,0 +1,16 @@
+---
+
+- name: bounce ntp service
+  service:
+    name: ntpd
+    state: restarted
+
+- name: bounce sshd service
+  service:
+    name: sshd
+    state: restarted
+
+- name: bounce fail2ban service
+  service:
+    name: fail2ban
+    state: restarted

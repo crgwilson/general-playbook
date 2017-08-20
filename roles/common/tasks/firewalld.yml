@@ -1,0 +1,23 @@
+---
+
+# Right now there isn't much to be done here but I may want to play with
+# zones and whatnot later so figured it'd be best to split off the tasks
+# into its own role
+
+- name: Firewalld package
+  yum:
+    name: firewalld
+    state: present
+
+- name: Firewalld service
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Setup required firewall rules
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  with_items: "{{ common_firewalld_rules }}"

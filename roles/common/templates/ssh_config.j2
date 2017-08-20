@@ -1,0 +1,13 @@
+Host *
+{% if common_sshd_ciphers is defined %}
+Ciphers {{ common_sshd_ciphers | join(',') }}
+{% endif %}
+{% if common_sshd_macs is defined %}
+MACs {{ common_sshd_macs | join(',') }}
+{% endif %}
+GSSAPIAuthentication yes
+ForwardX11Trusted yes
+SendEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+SendEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+SendEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+SendEnv XMODIFIERS

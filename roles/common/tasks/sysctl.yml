@@ -1,0 +1,12 @@
+---
+
+# Loop through all sysctl params provided
+
+- name: Required sysctl configs
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_items: "{{ common_sysctl_configs }}"
+
+# TODO: Enable roles to pass in more specific sysctl configs
+# to be added on top of the common ones.

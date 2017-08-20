@@ -1,0 +1,4 @@
+---
+# Variables for test runs done via vagrant
+
+ansible_user: vagrant

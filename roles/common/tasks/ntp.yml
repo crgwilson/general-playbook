@@ -1,0 +1,22 @@
+---
+
+- name: Install NTP Package
+  yum:
+    name: ntp
+    state: present
+
+- name: NTP conf file
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - bounce ntp service
+
+- name: NTP Service
+  service:
+    name: ntpd
+    state: started
+    enabled: true

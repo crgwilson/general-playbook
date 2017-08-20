@@ -1,0 +1,13 @@
+[DEFAULT]
+ignoreip = 127.0.0.1 {{ ansible_default_ipv4.address }}
+bantime = 86400
+
+#no email setup yet so just using root for now
+destemail = root@localhost
+
+[sshd]
+enabled  = true
+port     = ssh
+filter   = sshd
+logpath  = /var/log/secure
+maxretry = 3

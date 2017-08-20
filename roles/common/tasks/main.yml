@@ -1,0 +1,39 @@
+---
+# tasks file for generic
+
+- name: Fail if running on anything other than CentOS
+  fail:
+    msg: "Unsupported OS detected - This has only been tested on CentOS"
+  when: ansible_distribution != "CentOS"
+
+- name: Update all packages
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: Useful packages
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ common_default_packages }}"
+
+- include: network.yml
+  tags: network
+- include: firewalld.yml
+  tags: firewalld
+- include: ssh.yml
+  tags: ssh
+- include: sysctl.yml
+  tags: sysctl
+- include: ntp.yml
+  tags: ntp
+- include: selinux.yml
+  tags: selinux
+# Commenting out ipa-client installation for now. This will require a proper
+# way to store secrets to authenticate with krb, which I of course, won't
+# want in source control.
+#- include: ipa-client.yml
+#  tags: ipa-client
+- include: fail2ban.yml
+  tags: fail2ban

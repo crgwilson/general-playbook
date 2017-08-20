@@ -1,0 +1,6 @@
+# This file has been created via ansible
+# You probably don't want to make any changes manually
+search {{ domain_name }}
+{% for s in common_name_servers %}
+nameserver {{ s }}
+{% endfor %}

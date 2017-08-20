@@ -1,0 +1,87 @@
+---
+domain_name: localdomain
+
+common_default_packages:
+  - epel-release
+  - vim
+  - git
+  - ruby
+  - zsh
+  - bind-utils
+  - wget
+  - telnet
+  - nmap
+  - gcc
+  - whois
+  - ipa-client
+  - bash-completion
+
+# Params for network.yml
+common_name_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+
+# Params for sysctl.yml
+common_sysctl_configs:
+  - { key: net.ipv4.ip_forward, value: 0 }
+  - { key: net.ipv4.conf.all.send_redirects, value: 0 }
+  - { key: net.ipv4.conf.default.send_redirects, value: 0 }
+  - { key: net.ipv4.tcp_max_syn_backlog, value: 1280 }
+  - { key: net.ipv4.icmp_echo_ignore_broadcasts, value: 1 }
+  - { key: net.ipv4.conf.all.accept_source_route, value: 0 }
+  - { key: net.ipv4.conf.all.accept_redirects, value: 0 }
+  - { key: net.ipv4.conf.all.secure_redirects, value: 0 }
+  - { key: net.ipv4.conf.all.log_martians, value: 1 }
+  - { key: net.ipv4.conf.default.accept_source_route, value: 0 }
+  - { key: net.ipv4.conf.default.accept_redirects, value: 0 }
+  - { key: net.ipv4.conf.default.secure_redirects, value: 0 }
+  - { key: net.ipv4.icmp_echo_ignore_broadcasts, value: 1 }
+  - { key: net.ipv4.icmp_ignore_bogus_error_responses, value: 1 }
+  - { key: net.ipv4.tcp_syncookies, value: 1 }
+  - { key: net.ipv4.conf.all.rp_filter, value: 1 }
+  - { key: net.ipv4.conf.default.rp_filter, value: 1 }
+  - { key: net.ipv4.tcp_timestamps, value: 0 }
+  - { key: net.ipv6.conf.all.disable_ipv6, value: 1 }
+
+# Params for firewalld.yml
+common_firewalld_rules:
+  - ssh
+  - ntp
+
+# Params for ntp.yml
+common_ntp_servers:
+  - 0.us.pool.ntp.org
+  - 1.us.pool.ntp.org
+  - 2.us.pool.ntp.org
+  - 3.us.pool.ntp.org
+
+# Params for ssh.yml
+common_sshd_ciphers:
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
+
+common_sshd_macs:
+  - hmac-sha2-512
+  - hmac-sha2-256
+  - hmac-ripemd160
+
+# Params for selinux.yml
+common_selinux_policy: targeted
+common_selinux_state: permissive
+
+# Params for ipa-client.yml
+ipa_server: ipa.{{ domain_name }}
+ipa_principal_user: admin
+ipa_principal_password: password
+ipa_client_install_command: >
+  ipa-client-install
+  --hostname={{ inventory_hostname }}
+  --domain={{ domain_name }}
+  --server={{ ipa_server }}
+  --realm={{ domain_name|upper }}
+  --principal={{ ipa_principal_user }}
+  --password={{ ipa_principal_password }}
+  --enable-dns-updates
+  --no-ntp
+  --unattended

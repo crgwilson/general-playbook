@@ -1,0 +1,16 @@
+---
+
+- name: Install libselinux-python
+  yum:
+    name: libselinux-python
+    state: present
+
+- name: Fail if anyone tries to turn off selinux
+  fail:
+    msg: "Disabling selinux is bad and you should feel bad"
+  when: common_selinux_state == "disabled"
+
+- name: Set selinux policy
+  selinux:
+    policy: "{{ common_selinux_policy }}"
+    state: "{{ common_selinux_state }}"

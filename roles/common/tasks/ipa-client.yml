@@ -1,0 +1,14 @@
+---
+
+# Theres probably a better way to do this but lets just get it
+# working for now
+
+- name: Ipa-Client package
+  yum:
+    name: ipa-client
+    state: present
+
+- name: Install freeipa client
+  command: "{{ ipa_client_install_command }}"
+  args:
+    creates: /etc/ipa/default.conf

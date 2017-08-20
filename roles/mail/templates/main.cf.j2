@@ -1,0 +1,107 @@
+mail_owner = postfix
+
+myhostname = {{ ansible_hostname }}
+mydomain = {{ ansible_domain }}
+myorigin = $mydomain
+mydestination = $myhostname, localhost.$mydomain, localhost
+
+# allow anything on current subnet
+mynetworks_style = subnet
+inet_interfaces = all
+inet_protocols = all
+
+# Return bad error codes for unknown hosts
+unverified_sender_reject_code = 450
+unverified_sender_reject_code = 450
+unknown_local_recipient_reject_code = 450
+unknown_relay_recipient_reject_code = 450
+unknown_address_reject_code = 550
+unknown_hostname_reject_code = 550
+unknown_client_reject_code = 550
+unknown_virtual_mailbox_reject_code = 550
+unknown_virtual_alias_reject_code = 550
+non_fqdn_reject_code = 550
+multi_recipient_bounce_reject_code = 550
+disable_vrfy_command = yes
+resolve_numeric_domain = yes
+strict_rfc821_envelopes = yes
+message_size_limit = 25600000
+
+# TLS params
+smtp_tls_security_level = may
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3
+smtp_tls_protocols = !SSLv2, !SSLv3
+smtp_tls_note_starttls_offer = yes
+smtp_tls_ciphers = medium
+smtp_tls_log_level = 1
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificate.crt
+
+smtpd_use_tls = yes
+smtpd_tls_auth_only = yes
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
+smtpd_tls_protocols = !SSLv2, !SSLv3
+smtpd_tls_received_header = yes
+smtpd_tls_dh1024_param_file = /etc/ssl/private/dhparam2048.pem
+smtpd_tls_cert_file = /etc/ssl/certs/{{ ansible_fqdn }}.crt
+smtpd_tls_key_file = /etc/ssl/private/{{ ansible_fqdn }}.key
+
+# SASL params
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_local_domain = $myhostname
+broken_sasl_auth_clients = yes
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+
+
+smtpd_helo_required = yes
+smtpd_helo_restrictions = permit_mynetworks
+smtpd_banner = $myhostname ESMTP $mail_name
+smtp_header_checks = pcre:/etc/postfix/maps/smtp_header_checks.pcre
+smtpd_recipient_restrictions =
+  permit_mynetworks,
+  permit_sasl_authenticated,
+  reject_invalid_hostname,
+  reject_non_fqdn_hostname,
+  reject_non_fqdn_recipient,
+  reject_unauth_pipelining,
+  reject_unauth_destination,
+  permit
+
+relayhost =
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mailbox_size_limit = 0
+mailbox_transport = lmtp:unix:private/dovecot-lmtp
+
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+virtual_mailbox_domains = pgsql:/etc/postfix/pgsql-virtual-mailbox-domains.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/pgsql-virtual-mailbox-maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/pgsql-virtual-alias-maps.cf
+local_recipient_maps = $virtual_mailbox_maps
+
+dovecot_destination_recipient_limit = 1
+
+readme_directory = no
+
+postscreen_access_list = permit_mynetworks,
+  cidr:/etc/postfix/postscreen_access.cidr
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
