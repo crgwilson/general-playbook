@@ -8,7 +8,6 @@
     name: pam
     state: present
 
-# For some reason this one doesn't seem to be idempotent
 - name: Set max login attempts
   pamd:
     name: system-auth
@@ -35,7 +34,6 @@
     module_arguments: 'showfailed'
     state: after
 
-# This one also looks to be making changes every run for some reason
 - name: Set rule for reusing passwords
   pamd:
     name: system-auth
