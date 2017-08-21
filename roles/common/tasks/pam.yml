@@ -1,0 +1,84 @@
+---
+
+# Super basic PAM configuration for obvious stuff like # of failed logon
+# attempts, password reuse and so on
+
+- name: PAM package
+  yum:
+    name: pam
+    state: present
+
+# For some reason this one doesn't seem to be idempotent
+- name: Set max login attempts
+  pamd:
+    name: system-auth
+    type: account
+    control: required
+    module_path: pam_permit.so
+    new_type: password
+    new_control: requisite
+    new_module_path: pam_pwquality.so
+    module_arguments: 'try_first_pass
+      local_users_only
+      retry=3'
+    state: after
+
+- name: Show failed logon attempts
+  pamd:
+    name: system-auth
+    type: session
+    control: required
+    module_path: pam_limits.so
+    new_type: session
+    new_control: required
+    new_module_path: pam_lastlog.so
+    module_arguments: 'showfailed'
+    state: after
+
+# This one also looks to be making changes every run for some reason
+- name: Set rule for reusing passwords
+  pamd:
+    name: system-auth
+    type: session
+    control: required
+    module_path: pam_lastlog.so
+    new_type: password
+    new_control: sufficient
+    new_module_path: pam_unix.so
+    module_arguments: 'existing_options
+      remember=24'
+    state: after
+
+- name: Define login denial settings on failed authentication
+  pamd:
+    name: password-auth
+    type: auth
+    control: '[default=die]'
+    module_path: pam_faillock.so
+    module_arguments: 'authfail
+      deny=3
+      unlock_time=604800
+      fail_interval=900'
+
+- name: Define denial settings on successful authentication
+  pamd:
+    name: password-auth
+    type: auth
+    control: '[default=die]'
+    module_path: pam_unix.so
+    new_type: auth
+    new_control: required
+    new_module_path: pam_faillock.so
+    module_arguments: 'authsucc
+      deny=3
+      unlock_time=604800
+      fail_interval=900'
+    state: after
+
+- name: Require wheel for access to su command
+  pamd:
+    name: su
+    type: auth
+    control: required
+    module_path: pam_wheel.so
+    module_arguments: 'use_uid'

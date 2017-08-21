@@ -21,6 +21,7 @@
 *.tar
 *.zip
 
-# Vagrant stuff #
+# Other stuff #
 #################
 .vagrant
+site.retry

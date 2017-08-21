@@ -26,6 +26,8 @@
   tags: ssh
 - include: sysctl.yml
   tags: sysctl
+- include: pam.yml
+  tags: pam
 - include: ntp.yml
   tags: ntp
 - include: selinux.yml

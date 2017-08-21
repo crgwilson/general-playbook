@@ -1,0 +1,16 @@
+---
+
+# /var/tmp and /tmp should both always be set to noexec just in case
+# any funky scripts decide to magically pop up and try to do stuff
+
+- name: Ensure noexec on /var/tmp
+  mount:
+    path: /var/tmp
+    opts: defaults,noexec
+    state: present
+
+- name: Ensure noexec on /tmp
+  mount:
+    path: /tmp
+    opts: defaults,noexec
+    state: present
